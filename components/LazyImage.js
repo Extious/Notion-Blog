@@ -143,12 +143,6 @@ const adjustImgSize = (src, maxWidth) => {
   if (!src) {
     return null
   }
-  
-  // 对于 custom_emoji URL，不进行压缩处理
-  if (src.includes('custom_emoji')) {
-    return src
-  }
-  
   const screenWidth =
     (typeof window !== 'undefined' && window?.screen?.width) || maxWidth
 
