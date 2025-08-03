@@ -1,77 +1,168 @@
-# 帮助教程
+# Notion-Blog
 
-访问帮助：[NotionNext帮助手册](https://docs.tangly1024.com/)
+一个基于 Next.js + Notion API 的静态博客系统（ NotionNext ），支持多种主题和部署方案。
 
-> 本项目教程为免费、公开资源，仅限个人学习使用，禁止利用本教程建立的博客发布非法内容、进行违法犯罪活动。严禁任何个人或组织将本教程用于商业用途，包括但不限于直接售卖、间接收费、或其他变相盈利行为。转载、复制或介绍本教程内容时，须保留作者信息并明确注明来源。 
-> 本项目仅提供由作者团队授权的付费咨询服务，请注意辨别，谨防诈骗行为。任何未经授权的收费服务均可能存在法律风险。
+## 项目结构
 
-Notion是一个能让效率暴涨的生产力引擎，可以帮你书写文档、管理笔记，搭建知识库，甚至可以为你规划项目、时间管理、组织团队、提高生产力、还有当前最强大的AI技术加持。
+```
+Notion-Blog/
+├── blog.config.js                 # 博客主配置文件
+├── components/                     # 全局组件
+│   ├── ui/                        # UI组件库
+│   │   └── dashboard/             # 仪表板组件
+│   ├── Ackee.js                   # 分析组件
+│   ├── AdBlockDetect.js           # 广告拦截检测
+│   ├── AISummary.js               # AI摘要组件
+│   └── ...                        # 其他全局组件
+├── conf/                          # 配置文件目录
+│   ├── ad.config.js               # 广告配置
+│   ├── ai.config.js               # AI配置
+│   ├── analytics.config.js        # 分析配置
+│   └── ...                        # 其他配置文件
+├── hooks/                         # 自定义React Hooks
+│   ├── useAdjustStyle.js          # 样式调整Hook
+│   └── useWindowSize.ts           # 窗口尺寸Hook
+├── lib/                           # 核心库文件
+│   ├── cache/                     # 缓存管理
+│   │   ├── cache_manager.js       # 缓存管理器
+│   │   ├── local_file_cache.js    # 本地文件缓存
+│   │   └── memory_cache.js        # 内存缓存
+│   ├── config.js                  # 核心配置
+│   ├── db/                        # 数据库相关
+│   │   └── getSiteData.js         # 获取站点数据
+│   ├── font.js                    # 字体配置
+│   ├── global.js                  # 全局配置
+│   ├── lang/                      # 多语言支持
+│   │   ├── en-US.js              # 英文
+│   │   ├── fr-FR.js              # 法文
+│   │   ├── ja-JP.js              # 日文
+│   │   └── ...                    # 其他语言
+│   ├── notion/                    # Notion API相关
+│   │   ├── convertInnerUrl.js     # 内部URL转换
+│   │   ├── CustomNotionApi.ts     # 自定义Notion API
+│   │   ├── getAllCategories.js    # 获取所有分类
+│   │   └── ...                    # 其他Notion相关功能
+│   ├── plugins/                   # 插件系统
+│   │   ├── aiSummary.js           # AI摘要插件
+│   │   ├── algolia.js             # Algolia搜索插件
+│   │   ├── busuanzi.js            # 不蒜子统计插件
+│   │   └── ...                    # 其他插件
+│   └── utils/                     # 工具函数
+│       ├── formatDate.js          # 日期格式化
+│       ├── index.js               # 工具函数入口
+│       ├── pageId.js              # 页面ID处理
+│       └── ...                    # 其他工具函数
+├── pages/                         # Next.js页面
+│   ├── _app.js                    # 应用入口
+│   ├── _document.js               # 文档模板
+│   ├── api/                       # API路由
+│   │   ├── auth/                  # 认证相关API
+│   │   ├── cache.js               # 缓存API
+│   │   ├── subscribe.js           # 订阅API
+│   │   └── user.ts                # 用户API
+│   ├── archive/                   # 归档页面
+│   ├── auth/                      # 认证页面
+│   ├── category/                  # 分类页面
+│   ├── dashboard/                 # 仪表板页面
+│   ├── page/                      # 文章页面
+│   ├── search/                    # 搜索页面
+│   ├── sign-in/                   # 登录页面
+│   ├── sign-up/                   # 注册页面
+│   └── tag/                       # 标签页面
+├── public/                        # 静态资源
+│   ├── css/                       # 样式文件
+│   ├── images/                    # 图片资源
+│   │   ├── heo/                   # Heo主题图片
+│   │   ├── starter/               # Starter主题图片
+│   │   └── themes-preview/        # 主题预览图片
+│   ├── js/                        # JavaScript文件
+│   ├── svg/                       # SVG图标
+│   ├── videos/                    # 视频文件
+│   └── webfonts/                  # 网页字体
+├── styles/                        # 全局样式
+│   ├── globals.css                # 全局样式
+│   ├── notion.css                 # Notion样式
+│   └── prism-theme.css            # 代码高亮主题
+└── themes/                        # 主题系统
+    ├── commerce/                  # 商务主题
+    ├── example/                   # 示例主题
+    ├── fukasawa/                  # Fukasawa主题
+    ├── game/                      # 游戏主题
+    ├── gitbook/                   # GitBook主题
+    ├── heo/                       # Heo主题
+    ├── hexo/                      # Hexo主题
+    ├── landing/                   # 落地页主题
+    ├── magzine/                   # 杂志主题
+    ├── matery/                    # Matery主题
+    ├── medium/                    # Medium主题
+    ├── movie/                     # 电影主题
+    ├── nav/                       # 导航主题
+    ├── next/                      # Next主题
+    ├── nobelium/                  # Nobelium主题
+    ├── photo/                     # 照片主题
+    ├── plog/                      # Plog主题
+    ├── proxio/                    # Proxio主题
+    ├── simple/                    # 简约主题
+    ├── starter/                   # 启动主题
+    ├── typography/                # 排版主题
+    └── theme.js                   # 主题配置
+```
 
-> 如果希望进一步探索Notion的功能，欢迎购买《[Notion笔记从入门到精通进阶课程](https://docs.tangly1024.com/article/notion-tutorial)》
+## 核心功能
 
-# NotionNext
+### 1. 多主题支持
+项目内置20+种精美主题，包括：
+- **Next**: 现代化设计风格
+- **Medium**: 简洁阅读体验
+- **Hexo**: 传统博客风格
+- **Fukasawa**: 日式简约风格
+- **Heo**: 个性化主题
+- **Commerce**: 商务风格
+- **Game**: 游戏化界面
+- **GitBook**: 文档风格
+- **Landing**: 落地页风格
+- **Magazine**: 杂志风格
+- **Movie**: 电影风格
+- **Photo**: 摄影风格
+- **Typography**: 排版风格
+- **Simple**: 极简风格
+- **Starter**: 启动模板
 
-<p>
-  <a aria-label="GitHub commit activity" href="https://github.com/tangly1024/NotionNext/commits/main" title="GitHub commit activity">
-    <img src="https://img.shields.io/github/commit-activity/m/tangly1024/NotionNext?style=for-the-badge"/>
-  </a>
-  <a aria-label="GitHub contributors" href="https://github.com/tangly1024/NotionNext/graphs/contributors" title="GitHub contributors">
-    <img src="https://img.shields.io/github/contributors/tangly1024/NotionNext?color=orange&style=for-the-badge"/>
-  </a>
-  <a aria-label="Build status" href="#" title="Build status">
-    <img src="https://img.shields.io/github/deployments/tangly1024/NotionNext/Production?logo=Vercel&style=for-the-badge"/>
-  </a>
-  <a aria-label="Powered by Vercel" href="https://vercel.com?utm_source=Craigary&utm_campaign=oss" title="Powered by Vercel">
-    <img src="https://www.datocms-assets.com/31049/1618983297-powered-by-vercel.svg" height="28"/>
-  </a>
-</p>
+### 2. 插件系统
+- **AI摘要**: 自动生成文章摘要
+- **Algolia搜索**: 强大的搜索功能
+- **不蒜子统计**: 访问量统计
+- **评论系统**: 支持多种评论插件
+- **广告系统**: 广告位管理
 
-中文文档 | [README in English](./README_EN.md)
+### 3. 多语言支持
+- 中文 (zh-CN)
+- 英文 (en-US)
+- 法文 (fr-FR)
+- 日文 (ja-JP)
+- 韩文 (ko-KR)
+- 俄文 (ru-RU)
+- 土耳其文 (tr-TR)
 
-<hr/>
+### 4. 缓存系统
+- **内存缓存**: 快速访问
+- **本地文件缓存**: 持久化存储
+- **缓存管理器**: 统一缓存控制
 
-一个使用 NextJS + Notion API 实现的，部署在 Vercel 上的静态博客系统。为Notion和所有创作者设计。
+### 5. Notion集成
+- **API集成**: 与Notion API深度集成
+- **内容转换**: 自动转换Notion内容格式
+- **分类管理**: 自动获取和管理分类
+- **内部链接**: 智能处理内部链接
 
-支持多种部署方案
+## 技术栈
 
-## 预览效果
+- **框架**: Next.js
+- **样式**: Tailwind CSS
+- **渲染**: React-notion-x
+- **评论**: Twikoo, Giscus, Gitalk, Cusdis, Utterances
+- **图标**: Fontawesome
+- **部署**: Vercel, Netlify, 自托管
 
-在线演示：[https://preview.tangly1024.com/](https://preview.tangly1024.com/) ，点击左下角挂件可以切换主题，没找到喜欢的主题？[贡献](/CONTRIBUTING.md)一个吧~
-
-| Next                                                                                                  | Medium                                                                                                      | Hexo                                                                                                  | Fukasawa                                                                                                          |
-| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| <img src='./docs/theme-next.png' width='300'/> [预览NEXT](https://preview.tangly1024.com/?theme=next) | <img src='./docs/theme-medium.png' width='300'/> [预览MEDIUM](https://preview.tangly1024.com/?theme=medium) | <img src='./docs/theme-hexo.png' width='300'/> [预览HEXO](https://preview.tangly1024.com/?theme=hexo) | <img src='./docs/theme-fukasawa.png' width='300'/> [预览FUKASAWA](https://preview.tangly1024.com/?theme=fukasawa) |
-
-## 致谢
-
-感谢Craig Hart发起的Nobelium项目
-
-<table><tr align="left">
-  <td align="center"><a href="https://github.com/craigary" title="Craig Hart"><img src="https://avatars.githubusercontent.com/u/10571717" width="64px;"alt="Craig Hart"/></a><br/><a href="https://github.com/craigary" title="Craig Hart">Craig Hart</a></td>
-</tr></table>
-
-## 贡献者
-
-感谢所有为 NotionNext 做出贡献的人！
-
-[![Contributors](https://contrib.rocks/image?repo=tangly1024/NotionNext)](https://github.com/tangly1024/NotionNext/graphs/contributors)
-
-## 引用技术
-
-- **框架**: [Next.js](https://nextjs.org)
-- **样式**: [Tailwind CSS](https://www.tailwindcss.cn/)
-- **渲染**: [React-notion-x](https://github.com/NotionX/react-notion-x)
-- **评论**: [Twikoo](https://github.com/imaegoo/twikoo), [Giscus](https://giscus.app/zh-CN), [Gitalk](https://gitalk.github.io), [Cusdis](https://cusdis.com), [Utterances](https://utteranc.es)
-- **图标**: [Fontawesome](https://fontawesome.com/v6/icons/)
-
-## 🔗 友情链接
-
-- [Elog](https://github.com/LetTTGACO/elog) Markdown 批量导出工具、开放式跨平台博客解决方案，随意组合写作平台(语雀/Notion/FlowUs/飞书)和博客平台(Hexo/Vitepress/Halo/Confluence/WordPress等)
-
-## License
-
-The MIT License.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tangly1024/NotionNext&type=Date)](https://star-history.com/#tangly1024/NotionNext&Date)
+# 原 NotionNext 项目链接
+https://github.com/tangly1024/NotionNext
